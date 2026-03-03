@@ -1,10 +1,9 @@
 # GFramework
+Similar style to Material Design 3 in CSS and JS
+Simple framework.
 
-Tiny MD3 components. Just add classes.
-
+Last update:
 ## Inputs
-
-Two styles: filled and outlined. Floating label, smooth transitions.
 
 ```html
 <div class="material-input filled">
