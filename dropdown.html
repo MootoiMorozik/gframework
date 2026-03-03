@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+     <title>Test</title>
+     <link rel="stylesheet" href="gframework.css">
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.tooltip-container {
+    position: relative; 
+    display: inline-block;
+    text-align: left; 
+}
+
+.info-tooltip {
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.87); 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+    padding: 12px;
+    width: 250px; 
+    
+    position: absolute;
+    z-index: 1000;
+    
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s; 
+}
+
+.info-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip-title {
+    font-weight: 500; 
+    font-family: 'Roboto', sans-serif;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.tooltip-content {
+    margin: 0;
+    font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="tooltip-container">
+    <button class="material-icon-button" id="infoButton" style="padding: 3px 17px;"> 
+        <span 
+            class="material-symbols-outlined" 
+            style="
+                font-size: 15px; 
+                font-family: 'Roboto', sans-serif;
+                font-weight: 360; 
+            "
+        >Подробнее</span> 
+        <img 
+            src="icon.png" 
+            alt="Иконка" 
+            style="
+                height: 24px; 
+                vertical-align: middle; 
+                margin-left: 5px; 
+            "
+        >
+    </button>
+    
+    <div class="info-tooltip" id="tooltip">
+        <p class="tooltip-title">Подробно (ответ от Gemini):</p>
+        <p class="tooltip-content">«HTML-фреймворк» — это инструменты для разработки, которые предоставляют готовую структуру и набор инструментов, ускоряющих создание проектов</p>
+    </div>
+</div>
+
+<script src="gframework.js"></script>
+<script>
+    document.getElementById('infoButton').addEventListener('click', function(event) {
+        event.stopPropagation();
+        const tooltip = document.getElementById('tooltip');
+        tooltip.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', function(event) {
+        const tooltip = document.getElementById('tooltip');
+        const isClickInside = document.getElementById('infoButton').contains(event.target) || tooltip.contains(event.target);
+        if (!isClickInside && tooltip.classList.contains('visible')) {
+            tooltip.classList.remove('visible');
+        }
+    });
+</script>
+
+</body>
+</html>

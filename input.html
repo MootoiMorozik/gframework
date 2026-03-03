@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gframework input</title>
+    <link rel="stylesheet" href="gframework.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#eef2f5;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;gap:30px;padding:20px;margin:0;font-family:system-ui,sans-serif}
+        .inputs-row{display:flex;gap:30px;flex-wrap:wrap;justify-content:center}
+        .config-btn{position:fixed;bottom:30px;right:30px;background:#1e1b24;color:white;border:none;width:56px;height:56px;border-radius:30px;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:0.2s;z-index:100}
+        .config-btn:hover{background:#6750a4;transform:scale(1.05)}
+        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+        .modal.show{display:flex}
+        .modal-content{background:white;border-radius:28px;width:90%;max-width:480px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+        .modal-title{font-size:20px;font-weight:500;color:#1e1b24;margin-bottom:24px}
+        .config-section{margin-bottom:24px}
+        .config-section h4{font-size:14px;color:#5e5a66;margin-bottom:12px;font-weight:500}
+        .color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+        .color-option{width:100%;aspect-ratio:1;border-radius:12px;border:2px solid transparent;cursor:pointer;transition:0.1s}
+        .color-option.selected{border-color:#1e1b24;transform:scale(1.05)}
+        .slider-container{margin-top:16px}
+        .slider-container label{font-size:12px;color:#5e5a66;display:block;margin-bottom:4px}
+        .slider{width:100%;height:4px;background:#e1dfe5;border-radius:2px;-webkit-appearance:none}
+        .slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:#6750a4;border-radius:10px;cursor:pointer;border:none;box-shadow:0 2px 6px rgba(0,0,0,0.2)}
+        .preview-box{margin:24px 0;padding:20px;background:#f6f5f8;border-radius:20px}
+        .button-row{display:flex;gap:12px;justify-content:flex-end;margin-top:24px}
+        .modal-btn{padding:10px 24px;border-radius:30px;border:none;font-size:14px;font-weight:500;cursor:pointer}
+        .modal-btn.primary{background:#6750a4;color:white}
+        .modal-btn.primary:hover{background:#7c66b9}
+        .modal-btn.secondary{background:#e1dfe5;color:#1e1b24}
+        .modal-btn.secondary:hover{background:#cecbd0}
+    </style>
+</head>
+<body>
+    <div class="inputs-row">
+        <div style="width:100%;max-width:280px">
+            <div class="material-input filled" id="test-filled">
+                <span class="label">filled</span>
+                <input type="text" id="filled-field">
+            </div>
+            <div class="material-helper">заполненное поле</div>
+        </div>
+        <div style="width:100%;max-width:280px">
+            <div class="material-input outlined" id="test-outlined">
+                <span class="label">outlined</span>
+                <input type="text" id="outlined-field">
+            </div>
+            <div class="material-helper">контурное поле</div>
+        </div>
+    </div>
+
+    <button class="config-btn" id="configBtn">C</button>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title">настройки инпутов</div>
+            
+            <div class="config-section">
+                <h4>filled цвета</h4>
+                <div class="color-grid" id="filledColors">
+                    <div class="color-option" style="background:#e9e6ed" data-color="#e9e6ed"></div>
+                    <div class="color-option" style="background:#dfdce6" data-color="#dfdce6"></div>
+                    <div class="color-option" style="background:#cecbd0" data-color="#cecbd0"></div>
+                    <div class="color-option" style="background:#b8b3c0" data-color="#b8b3c0"></div>
+                    <div class="color-option" style="background:#a49eb0" data-color="#a49eb0"></div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h4>outlined цвета</h4>
+                <div class="color-grid" id="outlinedColors">
+                    <div class="color-option" style="background:#7e7a86" data-color="#7e7a86"></div>
+                    <div class="color-option" style="background:#6750a4" data-color="#6750a4"></div>
+                    <div class="color-option" style="background:#9a82db" data-color="#9a82db"></div>
+                    <div class="color-option" style="background:#ba1b1b" data-color="#ba1b1b"></div>
+                    <div class="color-option" style="background:#1e1b24" data-color="#1e1b24"></div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h4>бордер радиус</h4>
+                <div class="slider-container">
+                    <label id="radiusValue">4px</label>
+                    <input type="range" class="slider" id="radiusSlider" min="0" max="24" value="4" step="1">
+                </div>
+            </div>
+
+            <div class="preview-box">
+                <div style="display:flex;gap:16px;justify-content:center">
+                    <div class="material-input filled" id="preview-filled" style="width:140px">
+                        <span class="label">filled</span>
+                        <input type="text" value="превью">
+                    </div>
+                    <div class="material-input outlined" id="preview-outlined" style="width:140px">
+                        <span class="label">outlined</span>
+                        <input type="text" value="превью">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button class="modal-btn secondary" id="closeModal">отмена</button>
+                <button class="modal-btn primary" id="applyConfig">применить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="gframework.js"></script>
+    <script>
+        (function(){
+            let modal = document.getElementById('modal');
+            let configBtn = document.getElementById('configBtn');
+            let closeModal = document.getElementById('closeModal');
+            let applyBtn = document.getElementById('applyConfig');
+
+            configBtn.addEventListener('click', ()=>{
+                modal.classList.add('show');
+            });
+
+            closeModal.addEventListener('click', ()=>{
+                modal.classList.remove('show');
+            });
+
+            modal.addEventListener('click', (e)=>{
+                if(e.target === modal) modal.classList.remove('show');
+            });
+
+            let filledColorOptions = document.querySelectorAll('#filledColors .color-option');
+            let outlinedColorOptions = document.querySelectorAll('#outlinedColors .color-option');
+            let radiusSlider = document.getElementById('radiusSlider');
+            let radiusValue = document.getElementById('radiusValue');
+            
+            let selectedFilled = '#e9e6ed';
+            let selectedOutlined = '#7e7a86';
+            let selectedRadius = 4;
+
+            filledColorOptions.forEach(opt => {
+                opt.addEventListener('click', ()=>{
+                    filledColorOptions.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    selectedFilled = opt.dataset.color;
+                    updatePreview();
+                });
+            });
+
+            outlinedColorOptions.forEach(opt => {
+                opt.addEventListener('click', ()=>{
+                    outlinedColorOptions.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    selectedOutlined = opt.dataset.color;
+                    updatePreview();
+                });
+            });
+
+            radiusSlider.addEventListener('input', ()=>{
+                selectedRadius = radiusSlider.value;
+                radiusValue.textContent = selectedRadius + 'px';
+                updatePreview();
+            });
+
+            function updatePreview(){
+                let previewFilled = document.getElementById('preview-filled');
+                let previewOutlined = document.getElementById('preview-outlined');
+                
+                let style = document.getElementById('preview-styles') || document.createElement('style');
+                style.id = 'preview-styles';
+                
+                let css = `
+                    #preview-filled.material-input.filled {
+                        background: ${selectedFilled} !important;
+                    }
+                    #preview-filled.material-input.filled,
+                    #preview-outlined.material-input.outlined {
+                        border-radius: ${selectedRadius}px ${selectedRadius}px 0 0 !important;
+                    }
+                    #preview-outlined.material-input.outlined::before {
+                        border-color: ${selectedOutlined} !important;
+                        border-radius: ${selectedRadius}px !important;
+                    }
+                `;
+                
+                style.textContent = css;
+                document.head.appendChild(style);
+            }
+
+            filledColorOptions[0].classList.add('selected');
+            outlinedColorOptions[0].classList.add('selected');
+            updatePreview();
+
+            applyBtn.addEventListener('click', ()=>{
+                let mainFilled = document.getElementById('test-filled');
+                let mainOutlined = document.getElementById('test-outlined');
+                
+                let mainStyle = document.getElementById('main-styles') || document.createElement('style');
+                mainStyle.id = 'main-styles';
+                
+                let css = `
+                    #test-filled.material-input.filled {
+                        background: ${selectedFilled} !important;
+                    }
+                    #test-filled.material-input.filled,
+                    #test-outlined.material-input.outlined {
+                        border-radius: ${selectedRadius}px ${selectedRadius}px 0 0 !important;
+                    }
+                    #test-outlined.material-input.outlined::before {
+                        border-color: ${selectedOutlined} !important;
+                        border-radius: ${selectedRadius}px !important;
+                    }
+                `;
+                
+                mainStyle.textContent = css;
+                document.head.appendChild(mainStyle);
+                
+                modal.classList.remove('show');
+            });
+        })();
+    </script>
+</body>
+</html>
